@@ -12,6 +12,7 @@
   "type": "commonjs",
   "dependencies": {
     "dgram": "^1.0.1",
+    "http": "^0.0.1-security",
     "ws": "^8.21.0"
   }
 }

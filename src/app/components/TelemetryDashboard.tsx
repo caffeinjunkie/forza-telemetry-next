@@ -3,19 +3,28 @@
 import { useEffect, useState } from "react";
 
 export default function TelemetryDashboard() {
-  const [telemetry, setTelemetry] = useState({ rpm: 0, speedKmh: 0 });
+  const [telemetry, setTelemetry] = useState({ 
+    rpm: 0, 
+    speed: 0, 
+    gear: 0, 
+    engineMaxRpm: 0, 
+    currentEngineRpm: 0, 
+    throttle: 0, 
+    brake: 0, 
+    clutch: 0, 
+    steering: 0,
+    reversing: false
+  });
 
   useEffect(() => {
-    // Connect to the local Node.js WebSocket bridge
-    const ws = new WebSocket("ws://localhost:3001");
+  const eventSource = new EventSource("http://localhost:3001/telemetry");
 
-    ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      setTelemetry(data);
-    };
+  eventSource.onmessage = (event) => {
+    setTelemetry(JSON.parse(event.data));
+  };
 
-    return () => ws.close();
-  }, []);
+  return () => eventSource.close();
+}, [setTelemetry]);
 
   return (
     <main className="min-h-screen bg-neutral-900 text-white p-10 font-mono">
@@ -24,7 +33,7 @@ export default function TelemetryDashboard() {
       <div className="grid grid-cols-2 gap-4 max-w-md">
         <div className="bg-neutral-800 p-6 rounded-lg text-center shadow-lg">
           <p className="text-gray-400 text-sm tracking-wider">SPEED</p>
-          <p className="text-6xl font-bold my-2">{telemetry.speedKmh}</p>
+          <p className="text-6xl font-bold my-2">{(telemetry.speed * 3.6).toFixed(0)}</p>
           <p className="text-gray-500 text-xs">KM/H</p>
         </div>
 
@@ -32,6 +41,42 @@ export default function TelemetryDashboard() {
           <p className="text-gray-400 text-sm tracking-wider">RPM</p>
           <p className="text-6xl font-bold my-2">{telemetry.rpm}</p>
           <p className="text-gray-500 text-xs">REV/MIN</p>
+        </div>
+        
+        <div className="bg-neutral-800 p-6 rounded-lg text-center shadow-lg">
+          <p className="text-gray-400 text-sm tracking-wider">ENGINE MAX RPM</p>
+          <p className="text-6xl font-bold my-2">{telemetry.engineMaxRpm}</p>
+          <p className="text-gray-500 text-xs">ENGINE MAX RPM</p>
+        </div>
+        
+        <div className="bg-neutral-800 p-6 rounded-lg text-center shadow-lg">
+          <p className="text-gray-400 text-sm tracking-wider">GEAR</p>
+          <p className="text-6xl font-bold my-2">{telemetry.gear}</p>
+          <p className="text-gray-500 text-xs">GEAR</p>
+        </div>
+        
+        <div className="bg-neutral-800 p-6 rounded-lg text-center shadow-lg">
+          <p className="text-gray-400 text-sm tracking-wider">THROTTLE</p>
+          <p className="text-6xl font-bold my-2">{telemetry.throttle}</p>
+          <p className="text-gray-500 text-xs">THROTTLE</p>
+        </div>
+        
+        <div className="bg-neutral-800 p-6 rounded-lg text-center shadow-lg">
+          <p className="text-gray-400 text-sm tracking-wider">BRAKE</p>
+          <p className="text-6xl font-bold my-2">{telemetry.brake}</p>
+          <p className="text-gray-500 text-xs">BRAKE</p>
+        </div>
+        
+        <div className="bg-neutral-800 p-6 rounded-lg text-center shadow-lg">
+          <p className="text-gray-400 text-sm tracking-wider">CLUTCH</p>
+          <p className="text-6xl font-bold my-2">{telemetry.clutch}</p>
+          <p className="text-gray-500 text-xs">CLUTCH</p>
+        </div>
+        
+        <div className="bg-neutral-800 p-6 rounded-lg text-center shadow-lg">
+          <p className="text-gray-400 text-sm tracking-wider">STEERING</p>
+          <p className="text-6xl font-bold my-2">{telemetry.steering}</p>
+          <p className="text-gray-500 text-xs">STEERING</p>
         </div>
       </div>
     </main>
