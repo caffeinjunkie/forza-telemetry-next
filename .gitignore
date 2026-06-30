@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/telemetry-daemon/node_modules
 /.pnp
 .pnp.*
 .yarn/*
